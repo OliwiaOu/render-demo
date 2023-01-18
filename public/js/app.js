@@ -8,19 +8,22 @@ const myApp = {
     };
   },
   methods: {
-    async getData() {
-      const { data } = await axios.get('http://localhost:3000/immos');
+    async getImmos() {
+      const { data } = await axios.get('/immos');
       this.immos = data;
     },
-    async delData(imo) {
-      this.immos = this.immos.filter(({ id }) => id !== imo.id);
+    async delImmo({ id }) {
+      await axios.delete(`/immos/${id}`);
+      this.getImmos();
     },
-    chanceData(imo) {
-      this.input = imo.price;
-      this.newData(imo);
+    async selectImmo(immo) {
+      this.selectedImmo = { ...immo };
     },
-    newData(imo) {
-      imo.price = this.input;
+    async editImmo() {
+      await axios.patch(`/immos/${this.selectedImmo.id}`, {
+        price: this.selectedImmo.price,
+      });
+      this.getImmos();
     },
   },
 };
